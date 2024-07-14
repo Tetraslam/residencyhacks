@@ -1,37 +1,107 @@
-# Metrocraft
+# MetroCraft: AI-Powered Urban Planning and Policy Making
+
+Welcome to **MetroCraft**, the platform for AI-driven urban planning and policy making! This project aims to leverage LLMs and satellite data to design and visualize strategic urban policies, ensuring a smarter, more efficient future for cities worldwide. Our goal is to allow urban planners, policymakers, and communities to make informed, data-driven decisions.
+
+Voter manipulation should be a decentralized decision (the irony is strong with this one).
+
+## Table of Contents
+- [MetroCraft: AI-Powered Urban Planning and Policy Making](#metrocraft-ai-powered-urban-planning-and-policy-making)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Project Structure](#project-structure)
+  - [Contributing](#contributing)
+  - [License](#license)
+
+## Introduction
+
+MetroCraft uses Mistral-7B-Instruct locally and interactive visualizations to create comprehensive urban policies based on user-provided prompts. Users can input their ideas for urban development, and MetroCraft generates detailed plans, visualizations, and strategic roadmaps. We're also adding civil infrastructure maps to the menu in the future.
 
 ## Features
-- [ ] Specific widely used map format for cities (input)
-- [ ] Prompt for direction of policy
-- [ ] Decentralized voting system for prompt - tied to investment by individual users with a maximum investment cap to encourage voting turnout
-- [ ] Prompt -> policy map (graph)
-- [ ] Infrastructure development map (output)
-- [ ] Images of each development or some of them
 
-## Schedule
-11:00 - streamlit docs DONE
-11:30 - map format -> satellite image tiles DONE
-12:00 - set up llm for creating the direction of policy DONE
-13:00 - get it in json mode and set up an api for the graph query of the policy map DONE
-14:00 - turn json response into graph DONE
-15:00 - voting system DONE
-16:00 - lunch DONE
-17:00 - voting system DONE
-18:00 - talk to people DONE
-20:00 - turn policy map json response into infra development coordinate list + context
-21:00 - dinner DONE
-night until the fuhrer (HEIL REN) returns - write func to turn infra development coordinate list into infra development map (work on UI and format code properly and document if there's free time)
-10:00 - create func to generate images of development before/after using google maps street view api + dalle
-after - fix stuff + delay buffer + talk to people
+- **AI-Driven Policy Generation**: Generates urban policies using LLMs for the nitty-gritty.
+- **Interactive Voting System**: Allows users to vote on their favorite policies.
+- **Graph Construction**: Visualizes urban policies as interactive graphs.
+- **Geospatial Integration**: Retrieves and displays city coordinates on map tiles.
+- **User-Friendly Interface**: Simple, intuitive UI built with Streamlit.
 
-- graph storage for each prompt
-- voting system
-- infra development coordinate list -> after map
-- iconic places in city after new developments (include context of policy + prompt)
+## Installation
 
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/metrocraft.git
+   cd metrocraft
+   ```
 
-## Extras
-- [ ] Moon bases
-- [ ] Mars bases
+2. **Create a virtual environment**:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-You are a strategic public policy planner who helps create roadmaps for urban development. You speak concisely and focus on the end goal, generating ONE easy to parse json object containing each step. Do not include anything except JSON in the format {{"Step1": {"Name": "extend public transport", "Description": "build train lines and add buses"}, {"Step2": {"Name": increase fuel taxes", Description": "incentivize alternative modes of transport"}}
+3. **Install the dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables**:
+   Create a `.env` file in the root directory and add your API keys:
+   ```
+   OPENWEATHER=your_openweather_api_key
+   RAPID_API_KEY=your_rapidapi_key
+
+5. **LMStudio Query Server**:
+   Download [LMStudio](https://lmstudio.ai/) if you haven't already, and download TheBloke/Mistral-7B-Instruct-v0.1. You can then open the "Local Server" section in the sidebar and start the server. MetroCraft is already set up to use the default port (`1234`).
+   ```
+
+## Usage
+
+1. **Run the Streamlit app**:
+   ```bash
+   streamlit run main.py
+   ```
+
+2. **Input prompts and city names**: 
+   - Enter a policy prompt and city name to generate urban planning strategies.
+   - View the generated policies and their visualizations.
+   
+3. **Vote for policies**:
+   - Navigate to the voting page to vote for your favorite policies.
+   - View the current voting results. [in progress]
+
+## Project Structure
+
+- **main.py**: The main entry point for the Streamlit application. Handles user inputs and displays policy generation results.
+- **voting.py**: Manages the voting system for policies, allowing users to vote and view results.
+- **graphs.py**: Contains functions for constructing and visualizing graphs based on urban policies.
+- **coordinates.py**: Handles geospatial data retrieval, converting city names to coordinates and fetching map tiles.
+- **mistral_query.py**: Interacts with the AI models to generate policies and graph edges.
+
+## Contributing
+
+We welcome contributions from the community! If you'd like to contribute to MetroCraft, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch:
+   ```bash
+   git checkout -b feature-branch
+   ```
+3. Make your changes and commit them:
+   ```bash
+   git commit -m "Add new feature"
+   ```
+4. Push to the branch:
+   ```bash
+   git push origin feature-branch
+   ```
+5. Open a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+Join us in shaping the cities of tomorrow with intelligent, data-driven urban planning and policymaking. Together, we can create sustainable, efficient, and vibrant urban environments. Let's build the future with MetroCraft! And don't let those dirty politicians take away the bicycle lanes you deserve.
