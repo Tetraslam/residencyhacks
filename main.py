@@ -9,46 +9,83 @@ import coordinates
 from openai import OpenAI
 import re
 from graphs import construct_graph
+import mistral_query
 import json
 
+# Initialize the last_line variable
+last_line = ""
 
-client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
-systemprompt = "You are a strategic public policy planner who helps create roadmaps for urban development. You speak concisely and focus on the end goal, generating ONE easy to parse json object containing each step."
-userprompt = "Create a 5 step plan to expand defense around kowloon walled city"
-completion = client.chat.completions.create(
-  model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF",
-  messages=[
-    {"role": "system", "content": f"{systemprompt}"},
-    {"role": "user", "content": f"{userprompt}"}
-  ],
-  temperature=0.7)
-
-graph_edges =  [[1,2], [2,3], [3,4], [1, 3]]
-
-print(completion.choices[0].message.content)
-systemprompt = "You are a helpful network graph assistant. You identify edges between nodes based on natural language connections and your own knowledge. Reply to the user's list of nodes with a list in the form [[node1number, node2number], [node2number, node3number]], where each element represents a connection between nodes. Node indices start at 0 (the first node given by the user)."
-userprompt = completion.choices[0].message.content
-graph_edges = client.chat.completions.create(
-  model="TheBloke/Mistral-7B-Instruct-v0.1-GGUF",
-  messages=[
-    {"role": "system", "content": f"{systemprompt}"},
-    {"role": "user", "content": f"{userprompt}"}
-  ],
-  temperature=0.7)
-construct_graph(f"System prompt: {systemprompt} \n User prompt: {userprompt}",
-                num_of_vertices=5,
-                policy_names=list(json.loads(completion.choices[0].message.content).keys()),
-                policy_descriptions=list(json.loads(completion.choices[0].message.content).values()),
-                edges=graph_edges.choices[0].message.content)
-
-# Load environment variables
+# Set the configuration for the Streamlit page
+st.set_page_config(page_title="Metrocraft", layout='wide')
+st.title("MetroCraft: the AI urban planner and policymaker!")
+# Load environment variables from a .env file
 load_dotenv()
 
-coordinates.get_coords("paris")
-st.title("hello")
+# Function to save a given data to a text file by appending
+def save_to_file(data, filename="prompt.txt"):
+    with open(filename, "a") as file:
+        file.write(f"{data}\n")
 
+# Function to load prompts from a text file
+def load_prompts_from_file(filename="prompt.txt"):
+    if os.path.exists(filename):
+        with open(filename, "r") as file:
+            return [line.strip() for line in file.readlines()]
+    return []
+
+# Initialize session state for the list of prompts if not already done
+if 'prompts' not in st.session_state:
+    st.session_state.prompts = load_prompts_from_file()
+
+# Text input for the user to enter a prompt
+prompt = st.text_input("Prompt (example: write a 5 step plan to turn Bangalore into a vertical metropolis")
+# Text input for the user to enter a city name
+city = st.text_input("City name")
+
+# Initialize session state for policies list
+st.session_state.policies = []
+
+# Streamlit button to submit the entered prompt and city
+if st.button('Submit'):
+    return_val = True  # Replace with actual return value logic
+
+    if return_val:
+        st.success(f"Prompt accepted")
+        st.session_state.prompts.append(prompt)
+        
+        # Save the city and prompt to text files
+        save_to_file(city, "cities.txt")
+        save_to_file(prompt)
+        
+        # Get coordinates of the city and generate an image
+        coordinates.get_coords(city)
+        with open('./cities.txt') as f:
+            for line in f:
+                pass
+            last_line = line.strip()
+            st.image(f"{last_line}.png")
+        
+        # Create a policy based on the prompt and generate a graph
+        policy = mistral_query.create_policy(f"{prompt}")
+        mistral_query.create_graph(policy)
+        
+        # Add the policy to session state and display it
+        st.session_state.policies.append(policy)
+        print(st.session_state.policies)
+        st.image(f"{city}.png")
+        st.title("Policies")
+        st.write(json.dumps(json.loads(policy)))
+        
+    else:
+        st.error('Please enter the prompt again')
+
+# Display the list of prompts
+st.write("Prompts List:")
+for i, p in enumerate(st.session_state.prompts, 1):
+    st.write(f"{i}. {p}")
+
+# Experimental function for dialog interaction
 @st.experimental_dialog("e")
 def heil(heil):
-  st.write("hello")
-  
-heil("e")
+    st.write("hello")
+ 
